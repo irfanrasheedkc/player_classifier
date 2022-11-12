@@ -23,6 +23,10 @@ def classify_image(image_base64_data , file_path=None):
             'class_probability': np.around(__model.predict_proba(final) * 100, 2).tolist()[0],
             'class_dictionary': __class_name_to_number
         })
+        return result
+
+def class_number_to_name(class_num):
+    return __class_number_to_name[class_num]
 
 def load_saved_artifacts():
     print("loading saved artifacts...start")
@@ -34,9 +38,9 @@ def load_saved_artifacts():
         __class_number_to_name = {v:k for k,v in __class_name_to_number.items()}
 
     global __model
-    if __model is None:
-        with open('./artifacts/saved_model.pkl', 'rb') as f:
-            __model = joblib.load(f)
+    # if __model is None:
+    with open('./artifacts/saved_model.pkl', 'rb') as f:
+        __model = joblib.load(f)
     print("loading saved artifacts...done")
 
 def get_cropped_image_if_2_eyes(image_path, image_base64_data):
@@ -71,13 +75,16 @@ def get_cv2_image_from_base64_string(b64str):
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
 
-def classify_image(image_base64_data , file_path=None):
-    pass
-
 def get_b64_test_image_for_virat():
     with open("b64.txt") as f:
         return f.read()
 
 if __name__ == '__main__':
     load_saved_artifacts()
-    print(classify_image(get_b64_test_image_for_virat(),None))
+    print(classify_image(get_b64_test_image_for_virat(),None)[0]['class'])
+    # print(classify_image(None, "./test_images/benzema.jpg"))
+    # print(classify_image(None, "./test_images/neymar.jpg"))
+    # print(classify_image(None, "./test_images/messi.jpg"))
+    # print(classify_image(None, "./test_images/ronaldo.jpg"))
+    # print(classify_image(None, "./test_images/virat.jpg"))
+
